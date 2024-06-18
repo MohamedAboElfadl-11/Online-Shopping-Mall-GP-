@@ -71,6 +71,7 @@ class _OrdersPageState extends State<OrdersPage> {
           'Orders',
           style: TextStyle(fontSize: 16, color: Colors.black),
         ),
+        automaticallyImplyLeading: false,
       ),
       body: Column(
         children: [
