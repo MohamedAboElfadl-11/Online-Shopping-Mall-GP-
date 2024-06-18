@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../../grad/logo.dart';
 import '../screens/edit_page.dart';
 import '../screens/help_support_screen.dart';
 import '../screens/privacy_screen.dart';
@@ -50,7 +51,7 @@ void main() {
       '/edit_page': (context) => EditProfilePage(),
       '/privacy' : (context) => PrivacyPolicyPage(),
       '/help' : (context) => HelpSupportPage(),
-      '/logout' : (context) => Scaffold(),
+      '/logout' : (context) => WelcomeScreen(),
     },
   ));
 }
