@@ -12,38 +12,49 @@ class WelcomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomScaffold(
-      child: Column(
-        children: [
-          Container(
-            height: 400,
-            padding: const EdgeInsets.symmetric(
-              vertical: 0,
-              horizontal: 40.0,
-            ),
-            child: Center(
-              child: RichText(
-                textAlign: TextAlign.center,
-                text: const TextSpan(
-                  children: [
-                    TextSpan(
-                      text: 'Welcome \n',
-                      style: TextStyle(
-                        fontSize: 45.0,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black, // تغيير لون الكلمة إلى الأسود
-                      ),
-                    ),
-                  ],
-                ),
+      child: SafeArea(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Container(
+            //   height: 400,
+            //   padding: const EdgeInsets.symmetric(
+            //     vertical: 0,
+            //     horizontal: 40.0,
+            //   ),
+            //   child: Center(
+            //     child: RichText(
+            //       textAlign: TextAlign.center,
+            //       text: const TextSpan(
+            //         children: [
+            //           TextSpan(
+            //             text: 'Welcome',
+            //             style: TextStyle(
+            //               fontSize: 45.0,
+            //               fontWeight: FontWeight.w600,
+            //               color: Colors.black, // تغيير لون الكلمة إلى الأسود
+            //             ),
+            //           ),
+            //         ],
+            //       ),
+            //     ),
+            //   ),
+            // ),
+            Image.asset('images/pngwing.com (5).png'),
+            const Text(
+              'SHOPY',
+              style: TextStyle(
+                fontSize: 48.0,
+                fontWeight: FontWeight.w500,
               ),
             ),
-          ),
-          const Expanded(
-            flex: 1,
-            child: Padding(
+            const SizedBox(
+              height: 80,
+            ),
+            const Padding(
               padding: EdgeInsets.symmetric(
-                  horizontal:
-                      16.0), // إضافة مسافة بين بداية مساحة الأزرار وجوانب الشاشة
+                horizontal: 16.0,
+              ), // إضافة مسافة بين بداية مساحة الأزرار وجوانب الشاشة
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -99,8 +110,8 @@ class WelcomeScreen extends StatelessWidget {
                 ],
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
