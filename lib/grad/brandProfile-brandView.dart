@@ -1,45 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:start_project/chat_screens/chats_screen.dart';
 import 'package:start_project/grad/product.dart';
-import 'createBrandProfile.dart';
+import 'logo.dart';
+import 'product_provider.dart';
 import 'package:share/share.dart';
-import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
-
 import 'dashboard.dart';
 import 'order.dart';
-
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: ProfilePage(),
-    );
-  }
-}
-
-class Product {
-  final String name;
-  final String image;
-  final double price;
-
-  Product({
-    required this.name,
-    required this.image,
-    required this.price,
-  });
-
-  factory Product.fromJson(Map<String, dynamic> json) {
-    return Product(
-      name: json['name'],
-      image: json['image'],
-      price: json['price'].toDouble(),
-    );
-  }
-}
+import 'createBrandProfile.dart';
 
 class BrandProfile {
   final String name;
@@ -57,17 +26,6 @@ class BrandProfile {
     required this.coverImage,
     required this.profileImage,
   });
-
-  factory BrandProfile.fromJson(Map<String, dynamic> json) {
-    return BrandProfile(
-      name: json['name'],
-      category: json['category'],
-      followers: json['followers'],
-      description: json['description'],
-      coverImage: json['coverImage'],
-      profileImage: json['profileImage'],
-    );
-  }
 }
 
 class ProfilePage extends StatefulWidget {
@@ -77,20 +35,15 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   late Future<BrandProfile> brandProfile;
-  late Future<List<Product>> products;
 
   @override
   void initState() {
     super.initState();
     brandProfile = fetchBrandProfile();
-    products = fetchProducts();
   }
 
   Future<BrandProfile> fetchBrandProfile() async {
-    // Simulate network delay
-    await Future.delayed(const Duration(seconds: 2));
-
-    // Hypothetical data
+    await Future.delayed(Duration(seconds: 0)); // Simulate network delay
     return BrandProfile(
       name: 'Brand Name',
       category: 'Brand Category',
@@ -101,29 +54,12 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Future<List<Product>> fetchProducts() async {
-    // Simulate network delay
-    await Future.delayed(const Duration(seconds: 2));
-
-    // Hypothetical data
-    return [
-      Product(
-          name: 'Product 1',
-          image: 'https://via.placeholder.com/150',
-          price: 100.0),
-      Product(
-          name: 'Product 2',
-          image: 'https://via.placeholder.com/150',
-          price: 200.0),
-      Product(
-          name: 'Product 3',
-          image: 'https://via.placeholder.com/150',
-          price: 300.0),
-      Product(
-          name: 'Product 4',
-          image: 'https://via.placeholder.com/150',
-          price: 400.0),
-    ];
+  void _logout() {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => WelcomeScreen()),
+          (Route<dynamic> route) => false,
+    );
   }
 
   @override
@@ -143,11 +79,11 @@ class _ProfilePageState extends State<ProfilePage> {
               future: brandProfile,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
+                  return Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
-                  return const Center(child: Text('Failed to load profile'));
+                  return Center(child: Text('Failed to load profile'));
                 } else if (!snapshot.hasData) {
-                  return const Center(child: Text('No profile data'));
+                  return Center(child: Text('No profile data'));
                 } else {
                   final profile = snapshot.data!;
                   return Column(
@@ -173,7 +109,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 child: CircleAvatar(
                                   radius: 75.0,
                                   backgroundImage:
-                                      NetworkImage(profile.profileImage),
+                                  NetworkImage(profile.profileImage),
                                 ),
                               ),
                             ),
@@ -186,36 +122,36 @@ class _ProfilePageState extends State<ProfilePage> {
                           children: [
                             Text(
                               profile.name,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 30.0,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            const SizedBox(height: 4.0),
+                            SizedBox(height: 4.0),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
                                   profile.category,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 14.0,
                                   ),
                                 ),
-                                const SizedBox(width: 18.0),
+                                SizedBox(width: 18.0),
                                 Text(
                                   '${profile.followers} Followers',
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 14.0,
                                   ),
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 8.0),
+                            SizedBox(height: 8.0),
                             Text(
                               profile.description,
                               textAlign: TextAlign.center,
                             ),
-                            const SizedBox(height: 10.0),
+                            SizedBox(height: 10.0),
                           ],
                         ),
                       ),
@@ -229,8 +165,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          CreateBrandProfile()),
+                                    builder: (context) => CreateBrandProfile(),
+                                  ),
                                 );
                               },
                               style: ElevatedButton.styleFrom(
@@ -271,95 +207,46 @@ class _ProfilePageState extends State<ProfilePage> {
                 }
               },
             ),
-            const SizedBox(height: 20.0),
+            SizedBox(height: 20.0),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              padding: EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const Text(
+                  Text(
                     'Products',
                     style: TextStyle(
                       fontSize: 20.0,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 10.0),
-                  FutureBuilder<List<Product>>(
-                    future: products,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: CircularProgressIndicator());
-                      } else if (snapshot.hasError) {
-                        return const Center(
-                            child: Text('Failed to load products'));
-                      } else if (!snapshot.hasData) {
-                        return const Center(
-                            child: Text('No products available'));
-                      } else {
-                        final productData = snapshot.data!;
-                        return GridView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 10.0,
-                            mainAxisSpacing: 10.0,
-                          ),
-                          itemCount: productData.length,
-                          itemBuilder: (context, index) {
-                            final product = productData[index];
-                            return Card(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15.0),
-                                side: const BorderSide(
-                                    color: Colors.grey, width: 1.0),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    height: 110,
-                                    width: double.infinity,
-                                    child: Center(
-                                      child: Image.network(
-                                        product.image,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          product.name,
-                                          style: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          'EGP ${product.price}',
-                                          style: const TextStyle(
-                                            fontSize: 14,
-                                            color: Color(0xFF684399),
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        );
-                      }
+                  Consumer<ProductProvider>(
+                    builder: (context, productProvider, child) {
+                      return productProvider.products.isEmpty
+                          ? Center(
+                        child: Text(
+                          'No Products Added Yet',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      )
+                          : ListView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: productProvider.products.length,
+                        itemBuilder: (context, index) {
+                          final product = productProvider.products[index];
+                          return ListTile(
+                            leading: Image.file(
+                              product.imageFile,
+                              width: 50,
+                              height: 50,
+                            ),
+                            title: Text(product.name),
+                            subtitle: Text(product.stockStatus),
+                            trailing: Text('\$${product.price.toStringAsFixed(2)}'),
+                          );
+                        },
+                      );
                     },
                   ),
                 ],
@@ -394,7 +281,6 @@ class _ProfilePageState extends State<ProfilePage> {
                   context,
                   MaterialPageRoute(builder: (context) => const ChatsScreen()),
                 );
-                // Add navigation logic for Messages page if you have one
                 break;
               case 3:
                 Navigator.push(
@@ -403,10 +289,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 );
                 break;
               case 4:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ProfilePage()),
-                );
+                break;
             }
           },
           items: [
@@ -416,7 +299,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             SalomonBottomBarItem(
               icon: const Icon(Icons.receipt_long),
-              title: const Text("Search"),
+              title: const Text("Orders"),
             ),
             SalomonBottomBarItem(
               icon: const Icon(Icons.message),
@@ -424,13 +307,10 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             SalomonBottomBarItem(
               icon: const Icon(Icons.inventory_2),
-              title: const Text("Cart"),
+              title: const Text("Products"),
             ),
             SalomonBottomBarItem(
-              icon: const Icon(
-                Icons.account_circle,
-                color: Color(0xFF684399),
-              ),
+              icon: const Icon(Icons.account_circle, color: Color(0xFF684399)),
               title: const Text(
                 "Account",
                 style: TextStyle(color: Color(0xFF684399)),
