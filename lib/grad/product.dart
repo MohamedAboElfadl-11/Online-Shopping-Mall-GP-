@@ -1,39 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
-import 'package:start_project/chat_screens/chats_screen.dart';
-import 'AddProduct.dart';
+import '../chat_screens/chats_screen.dart';
 import 'brandProfile-brandView.dart';
 import 'dashboard.dart';
 import 'order.dart';
+import 'AddProduct.dart';
+import 'dart:io';
 
 void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Product Page',
-      theme: ThemeData(
-        primaryColor: Colors.white,
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.white,
-          foregroundColor: Colors.black,
-        ),
-      ),
-      home: ProductPage(),
-    );
-  }
+  runApp(MaterialApp(
+    home: ProductPage(),
+  ));
 }
 
 class Product {
   final String name;
+  final String description;
+  final double price;
   final String stockStatus;
-  final String price;
+  final String category;
+  final String subcategory;
+  final File imageFile; // Changed to File object
 
-  Product({required this.name, required this.stockStatus, required this.price});
+  Product({
+    required this.name,
+    required this.description,
+    required this.price,
+    required this.stockStatus,
+    required this.category,
+    required this.subcategory,
+    required this.imageFile, // Changed to File object
+  });
 }
 
 class ProductPage extends StatefulWidget {
@@ -42,13 +39,7 @@ class ProductPage extends StatefulWidget {
 }
 
 class _ProductPageState extends State<ProductPage> {
-  final List<Product> allProducts = [
-    Product(name: 'Tote Bag', stockStatus: '10 in Stock', price: 'EGP310'),
-    Product(name: 'Tote Bag', stockStatus: 'Out of Stock', price: 'EGP310'),
-    Product(name: 'Tote Bag', stockStatus: '10 in Stock', price: 'EGP310'),
-    Product(name: 'Tote Bag', stockStatus: 'Out of Stock', price: 'EGP310'),
-    Product(name: 'Tote Bag', stockStatus: '2 in Stock', price: 'EGP310'),
-  ];
+  final List<Product> allProducts = [];
 
   List<Product> displayedProducts = [];
   TextEditingController searchController = TextEditingController();
@@ -61,19 +52,50 @@ class _ProductPageState extends State<ProductPage> {
 
   void _filterProducts(String query) {
     List<Product> filteredProducts = allProducts
-        .where((product) =>
-            product.name.toLowerCase().contains(query.toLowerCase()))
+        .where((product) => product.name.toLowerCase().contains(query.toLowerCase()))
         .toList();
     setState(() {
       displayedProducts = filteredProducts;
     });
   }
 
-  void _openAddProductPage() {
-    Navigator.push(
+  void _openAddProductPage({Product? product}) async {
+    final newProduct = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => AddProductScreen()),
-    );
+      MaterialPageRoute(builder: (context) => AddProductScreen(product: product)),
+    ) as Product?;
+
+    if (newProduct != null) {
+      setState(() {
+        // Check if product already exists in allProducts
+        final existingProductIndex = allProducts.indexWhere((p) => p.name == newProduct.name);
+        if (existingProductIndex != -1) {
+          // Update existing product
+          allProducts[existingProductIndex] = newProduct;
+          displayedProducts[existingProductIndex] = Product(
+            name: newProduct.name,
+            description: newProduct.description,
+            price: newProduct.price,
+            stockStatus: newProduct.stockStatus,
+            category: newProduct.category,
+            subcategory: newProduct.subcategory,
+            imageFile: newProduct.imageFile, // Keep the File object
+          );
+        } else {
+          // Add new product
+          allProducts.add(newProduct);
+          displayedProducts.add(Product(
+            name: newProduct.name,
+            description: newProduct.description,
+            price: newProduct.price,
+            stockStatus: newProduct.stockStatus,
+            category: newProduct.category,
+            subcategory: newProduct.subcategory,
+            imageFile: newProduct.imageFile, // Keep the File object
+          ));
+        }
+      });
+    }
   }
 
   @override
@@ -84,6 +106,7 @@ class _ProductPageState extends State<ProductPage> {
           'Products',
           style: TextStyle(fontSize: 16, color: Colors.black),
         ),
+        automaticallyImplyLeading: false,
       ),
       body: Column(
         children: [
@@ -107,29 +130,39 @@ class _ProductPageState extends State<ProductPage> {
                         prefixIcon: Icon(Icons.search, color: Colors.black),
                         border: InputBorder.none,
                       ),
-                      style: const TextStyle(
-                          fontSize: 14, color: Color(0xFF684399)),
+                      style: const TextStyle(fontSize: 14, color: Color(0xFF684399)),
                       onChanged: _filterProducts,
                     ),
                   ),
                 ),
                 IconButton(
                   icon: const Icon(Icons.add, color: Color(0xFF684399)),
-                  onPressed: _openAddProductPage,
+                  onPressed: () => _openAddProductPage(),
                 ),
               ],
             ),
           ),
           Expanded(
-            child: ListView.builder(
+            child: displayedProducts.isEmpty
+                ? const Center(
+              child: Text(
+                'No Products Added Yet',
+                style: TextStyle(fontSize: 16),
+              ),
+            )
+                : ListView.builder(
               itemCount: displayedProducts.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                  leading: Image.asset('images/image-not-found.jpg',
-                      width: 50, height: 50),
+                  onTap: () => _openAddProductPage(product: displayedProducts[index]),
+                  leading: Image.file(
+                    displayedProducts[index].imageFile, // Use the File object here
+                    width: 50,
+                    height: 50,
+                  ),
                   title: Text(displayedProducts[index].name),
                   subtitle: Text(displayedProducts[index].stockStatus),
-                  trailing: Text(displayedProducts[index].price),
+                  trailing: Text('\$${displayedProducts[index].price.toStringAsFixed(2)}'),
                 );
               },
             ),
@@ -164,7 +197,7 @@ class _ProductPageState extends State<ProductPage> {
                 ); // Add navigation logic for Messages page if you have one
                 break;
               case 3:
-                // Already on the Products page, no action needed
+              // Already on the Products page, no action needed
                 break;
               case 4:
                 Navigator.push(
@@ -188,17 +221,11 @@ class _ProductPageState extends State<ProductPage> {
             ),
             SalomonBottomBarItem(
               icon: const Icon(Icons.inventory_2, color: Color(0xFF684399)),
-              title: const Text("Products",
-                  style: TextStyle(color: Color(0xFF684399))),
+              title: const Text("Products", style: TextStyle(color: Color(0xFF684399))),
             ),
             SalomonBottomBarItem(
-              icon: const Icon(
-                Icons.account_circle,
-              ),
-              title: const Text(
-                "Account",
-                style: TextStyle(color: Color(0xFF684399)),
-              ),
+              icon: const Icon(Icons.account_circle),
+              title: const Text("Account", style: TextStyle(color: Color(0xFF684399))),
             ),
           ],
         ),
