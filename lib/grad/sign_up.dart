@@ -10,6 +10,7 @@ class SignUpScreen extends StatefulWidget {
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
 }
+
 class _SignUpScreenState extends State<SignUpScreen> {
   final _formSignupKey = GlobalKey<FormState>();
   bool agreePersonalData = true;
@@ -193,13 +194,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               );
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => InterestPage()),
+                                MaterialPageRoute(
+                                    builder: (context) => InterestPage()),
                               );
                             } else if (!agreePersonalData) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                    content: Text(
-                                        'Please agree to the processing of personal data')),
+                                  content: Text(
+                                    'Please agree to the processing of personal data',
+                                  ),
+                                ),
                               );
                             }
                           },
