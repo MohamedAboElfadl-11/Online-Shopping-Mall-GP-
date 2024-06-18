@@ -126,7 +126,7 @@ class _InterestPageState extends State<InterestPage> {
                         minimumSize:
                             const Size(325, 40), // Adjust width as needed
                       ),
-                      child: const Text('Continue'),
+                      child: const Text('Continue', style: TextStyle(color: Colors.white),),
                     ),
                   ],
                 ),
