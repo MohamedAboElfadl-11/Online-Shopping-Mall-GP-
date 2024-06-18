@@ -142,11 +142,11 @@ class _CreateBrandProfileState extends State<CreateBrandProfile> {
               child: const Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.upload),
+                  Icon(Icons.upload, color: Colors.white),
                   SizedBox(width: 8),
                   Text(
                     "Upload Cover Image",
-                    style: TextStyle(fontSize: 16),
+                    style: TextStyle(fontSize: 16, color: Colors.white),
                   ),
                 ],
               ),
