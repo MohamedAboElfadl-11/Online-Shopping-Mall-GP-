@@ -80,7 +80,7 @@ class _RecommendationsState extends State<Recommendations> {
                       const SizedBox(height: 20),
                       ElevatedButton(
                         onPressed: () {},
-                        child: const Text('Continue'),
+                        child: const Text('Continue', style: TextStyle(color: Colors.white),),
                         style: ElevatedButton.styleFrom(
                           foregroundColor: Colors.white,
                           backgroundColor: const Color(0xFF684399),
