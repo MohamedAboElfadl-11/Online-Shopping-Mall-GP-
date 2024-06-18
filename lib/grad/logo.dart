@@ -40,7 +40,8 @@ class WelcomeScreen extends StatelessWidget {
             //     ),
             //   ),
             // ),
-            Image.asset('images/pngwing.com (5).png'),
+            Image.asset(
+                'images/—Pngtree—online shop digital shopping logo_7265985.png'),
             const Text(
               'SHOPY',
               style: TextStyle(
